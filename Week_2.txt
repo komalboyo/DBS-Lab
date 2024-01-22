@@ -1,0 +1,122 @@
+1. 
+create table employee 
+	(EmpNo int, 
+	EmpName varchar(10) not null, 
+	Gender char(1) not null,
+	Salary int not null,
+	Address varchar(10) not null,
+	DNo int,
+	primary key(EmpNo),
+	check (Gender in ('M', 'F')));
+
+2. 
+create table department
+	(DeptNo int, 
+	DeptName varchar(10) unique, 
+	Location varchar(10),
+	primary key(DeptNo));
+
+3. 
+Alter table employee modify(foreign key(DNo) references department(DeptNo));
+
+4. 
+insert into department values(1, 'CSE', 'Manipal');
+insert into department values(2, 'CPS', 'Manipal');
+insert into department values(3, 'MECH', 'Bangalore');
+
+insert into employee values(100, 'Komal', 'F', 60000, 'Delhi', 2);
+insert into employee values(200, 'Harshitha', 'F', 30000, 'Hyderabad', 1);
+insert into employee values(300, 'Aarav', 'M', 10000, 'Bombay', 2);
+insert into employee values(400, 'Hemanth', 'M', 90000, 'Telangana', 2);
+insert into employee values(500, 'Arushi', 'F', 8000, 'Bombay', 3);
+
+5. //repeats deptname
+insert into department values(4, 'CSE', 'Manipal'); 
+insert into department values(null, 'ICT', 'Manipal');
+insert into department values(5, null, 'Bangalore'); //takes null values
+
+insert into employee values(100, 'Drishti', 'F', 45000, 'Delhi', 2);
+insert into employee values(120, null, 'F', 30000, 'Hyderabad', 1);
+insert into employee values(220, 'Virman', 'H', null, 'Bombay', 2);
+
+6.
+delete from department where DeptNo in (select Dno from employee group by DNo having count(*)>1);
+
+7.
+alter table employee rename constraint SYS_C00158315 to const1;
+alter table employee drop constraint const1;
+alter table employee add constraint const1 foreign key(DNo) references department(DeptNo) on delete cascade;
+
+8.
+alter table employee modify (constraint const2 salary default (10000));
+insert into employee values (550, 'Roopanshi', 'F', default, 'Chandigarh', 1);
+
+
+drop table employee;
+drop table department;
+
+copy pasted university and small realtions 
+
+
+9.
+select name,dept_name from student;
+
+10.
+select * from instructor where dept_name = 'Comp. Sci.';
+
+11.
+select title from course where dept_name='Comp. Sci.' and credits=3;
+
+12.####WRONG since multiple coursesw taken by 1 id
+select course_id,title from course where course_id in(select course_id from takes group by TAKES.ID);
+
+select course_id,title from course where course_id in(select course_id from takes where id='12345');
+
+13.
+select * from instructor where salary between 40000 and 90000;
+
+14.
+select id from instructor where id not in(select id from teaches); 
+
+15.
+select student.name,course.title,section.year from student,course,section,takes  where student.id=takes.id and course.course_id=takes.course_id and takes.course_id=section.course_id and section.room_number=303;
+or natural join may be used
+select name, title, year from Student natural join Course natural join Section where room_number = 303;
+
+16.
+select student.name,course.course_id,course.title as c_name from student,takes,course where student.id=takes.id and takes.course_id=course.course_id and takes.year=2009;
+or\
+select name,course_id,title as c_name from student natural join takes natural join course where takes.year=2009;
+
+17.
+select name, salary as inst_salary from Instructor where salary > (select min(salary) from Instructor where dept_name = 'Comp. Sci.');
+
+18)
+select name from Instructor where dept_name like '%ch%';
+
+19)
+select name, length(name) from Student;
+
+20)
+select dept_name, substr(dept_name, 3, 3) from Department;
+
+21)
+select upper(name) from Instructor;
+
+22)
+select id, course_id, NVL(grade, 'NA') from takes where semester = 'Summer';
+
+23)
+select salary, round(salary/3, -2) from Instructor;
+
+
+
+
+
+
+
+
+
+
+
+
