@@ -1,0 +1,45 @@
+create table employee (emp_no INT, emp_name VARCHAR(10), emp_address varchar(10));
+
+****keep varchar to 10-11
+
+insert into employee values (1, 'Radha','Ahmedabad');
+insert into employee values (2, 'Shyam','MANGALORE');
+insert into employee values (3, 'Komal','MANIPAL');
+insert into employee values (4, 'Harshitha','Manipal');
+insert into employee values (5, 'Tanisha','Delhi');
+
+select emp_name from employee;
+
+select emp_name from  employee where emp_address = 'MANIPAL' or emp_address = 'Manipal';
+
+alter table employee add(salary int);
+
+#### wrong 
+isert into employee (salary) values (30000) where emp_name = 'Radha';
+insert into employee (salary) values (10000) where emp_name = 'Shyam';
+insert into employee (salary) values (20000) where emp_name = 'Komal';
+insert into employee (salary) values (30000) where emp_name = 'Tanisha';
+insert into employee (salary) values (15000) where emp_name = 'Harshitha';
+####
+
+****have to use update to add new vales to existing rows
+
+update employee set salary = 30000 where emp_no =1;
+update employee set salary = 35000 where emp_no =2;
+update employee set salary = 20000 where emp_no =3;
+update employee set salary = 40000 where emp_no =4;
+update employee set salary = 50000 where emp_no =5;
+
+describe employee;
+
+delete from employee where emp_address = 'MANGALORE';
+
+rename employee to employee1;
+
+drop table employee1;
+
+
+****can you update to null?
+
+
+

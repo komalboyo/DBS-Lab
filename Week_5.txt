@@ -1,0 +1,130 @@
+1.	Retrieve the birth date and address of the employee(s) whose name is ‘John B. 
+	Smith’. Retrieve the name and address of all employees who work for the 
+	‘Research’ department.
+
+SELECT bdate, address from EMPLOYEE WHERE fname = 'John' and minit = 'B' and lname='Smith';
+
+SELECT fname, minit, lname, address from employee e, department d where e.dno=d.dnumber and dname='Research';
+
+2. 	For every project located in ‘Stanford’, list the project number, the controlling 
+	department number, and the department manager’s last name, address, and birth 
+	date.
+
+SELECT pnumber, Dnum, lname, address, bdate 
+FROM department D, project P, employee E
+WHERE d.dnumber=p.dnum and d.mgr_ssn=e.ssn and plocation = 'Stafford';
+
+3.	For each employee, retrieve the employee’s first and last name and the first and 
+	last name of his or her immediate supervisor.
+
+SELECT e1.fname, e1.lname, e2.fname, e2.lname
+FROM Employee e1, Employee e2
+WHERE e1.super_ssn = e2.ssn;
+
+4.	Make a list of all project numbers for projects that involve an employee whose 
+	last name is ‘Smith’, either as a worker or as a manager of the department that
+	controls the project.
+
+(SELECT pnumber, lname
+FROM Project p, Employee e, Works_on w
+WHERE p.pnumber = w.pno and w.essn=e.ssn and lname = 'Smith')
+UNION 
+(SELECT pnumber, lname
+FROM Project p, Employee e, Department d
+WHERE p.dnum=d.dnumber and d.mgr_ssn=e.ssn and lname = 'Smith');
+
+5.	Show the resulting salaries if every employee working on the ‘ProductX’ project 
+	is given a 10 percent raise.	
+
+SELECT salary*1.1 upd_sal
+FROM Employee e, Project p, Works_on w
+WHERE p.pnumber=w.pno and w.essn = e.ssn and pname='ProductX';
+
+6.	Retrieve a list of employees and the projects they are working on, ordered by 
+	department and, within each department, ordered alphabetically by last name, then 
+	first name.
+
+SELECT dnum, fname, minit, lname, pname
+FROM employee e, project p, Works_on w
+WHERE p.pnumber=w.pno and w.essn=e.ssn
+ORDER BY dno, lname, fname;
+
+7.	Retrieve the name of each employee who has a dependent with the same first name 
+	and is the same sex as the employee.
+
+SELECT Fname, minit, lname
+FROM employee e, dependent d
+WHERE d.essn=e.ssn and dependent_name=fname and e.sex=d.sex;
+
+8.	Retrieve the names of employees who have no dependents.
+
+SELECT fname, minit, lname
+FROM employee 
+WHERE ssn not in (select essn from dependent);
+
+9.	List the names of managers who have at least one dependent.
+
+SELECT fname, minit, lname
+FROM Employee e, department d
+WHERE e.ssn=d.mgr_ssn and mgr_ssn in (select essn from dependent);
+
+10.	Find the sum of the salaries of all employees, the maximum salary, the minimum 
+	salary, and the average salary.
+
+SELECT sum(salary) sum_sal, max(salary) max_sal, min(salary) min_sal, avg(salary) avg_sal
+FROM employee;
+
+11.	For each project, retrieve the project number, the project name, and the number 
+	of employees who work on that project.
+
+SELECT pnumber, pname, count(essn) no_of_emp
+FROM project p, works_on w
+WHERE p.pnumber=w.pno
+GROUP BY PNUMBER, PNAME;
+
+12.	For each project on which more than two employees work, retrieve the project 
+	number, the project name, and the number of employees who work on the 
+	project.
+
+SELECT pnumber, pname, count(essn) no_of_emp
+FROM project p, works_on w
+WHERE p.pnumber=w.pno 
+GROUP BY PNUMBER, PNAME
+HAVING count(essn)>2;
+
+13.	For each department that has more than five employees, retrieve the department 
+	number and the number of its employees who are making more than 40,000.
+
+SELECT dnumber, count(ssn)
+FROM department d, employee e
+WHERE d.dnumber=e.dno and salary >= 40000
+GROUP BY dnumber;
+
+14.	Find the total number of (distinct) employees who have worked on project 
+	‘ProductX'.
+
+SELECT count(distinct essn)
+FROM project p, works_on w
+WHERE p.pnumber=w.pno and pname='ProductX';
+
+15.	Find the names of employees who work on all the projects controlled by 
+	department number 5.
+
+SELECT fname, minit, lname
+FROM Employee e, department d, project p, works_on w
+WHERE d.dnumber=p.dnum and w.pno=p.pnumber and e.ssn=w.essn and dnum=5;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,63 @@
+University Database Schema:
+Student (ID, name,dept-name, tot-cred)
+Instructor(ID, name, dept-name, salary)
+Course (Course-id, title,dept-name, credits)
+Takes (ID, course-id, sec-id, semester, year, grade)
+Classroom (building, room-number, capacity)
+Department (dept-name, building, budget)
+Section (course-id, section-id, semester, year, building, room-number, time-slot-id)
+Teaches (id, course-id, section-id, semester, year)
+Advisor(s-id, i-id)
+Time-slot (time-slot-id, day, start-time, end-time)
+Prereq (course-id, prereq-id)
+
+1. select course_id,count(ID) from takes natural right outer join course group by course_id;
+
+2. select dept_name from student group by dept_name having count(ID) > 10;
+
+3. SELECT dept_name, count(course_id) FROM course group by dept_name;
+
+4. select dept_name, avg(salary) from instructor group by dept_name having avg(salary)>42000;
+
+5. select sec_id, count(id) from section natural join takes where semester='Spring' and year=2009 group by sec_id;
+
+6. select course_id,title from course natural join prereq where prereq_id is not null order by (course_id) asc;
+
+7. select * from instructor order by (salary) desc;
+
+8. select max(s) from(select dept_name,sum(salary) s from instructor group by dept_name);
+---------OR-------
+select dept_name, sum(salary) s from instructor group by dept_name having sum(salary) >= all (select sum(salary) from instructor group by dept_name);
+
+9. select dept_name, avg(salary) from instructor group by dept_name having avg(salary)>42000;
+
+10. select sec_id
+    from (select sec_id, count(ID) from takes natural join section where semester='Spring' and year=2010 group by sec_id having count(id)>=all(select count(ID) from takes natural join section where semester='Spring' and year=2010 group by sec_id));
+
+ SELECT sec_id, COUNT(id) FROM takes WHERE year = 2010 AND semester = 'Spring' GROUP BY sec_id HAVING COUNT(id)=(select max(strength) from (select sec_id ,count(id) strength from takes where year=2010 and semester='Spring' group by sec_id));
+
+11. select NAME FROM INSTRUCTOR i, takes t1 where teaches.sec_id=T1.sec_id and NOT EXISTS (select id from student where dept_name='Comp. Sci.') MINUS (select t2.id from takes t2 where t1.id=t2.id);
+
+SELECT NAME FROM instructor i where not exists (select )
+
+12. SELECT dept_name, strength,avgsal from(select dept_name,count(id) strength,avg(salary) avgsal from instructor group by dept_name having avg(salary)>50000) where strength>5;
+
+13. with max_budget(value)as(select max(budget)from department)
+select budget from department,max_budget where department.budget=max_budget.value;
+
+14. with dept_total(dept_name,value)as
+(select dept_name,sum(salary) from instructor group by dept_name),
+dept_total_avg(value)as 
+(select avg(value) from dept_total)
+select dept_name from dept_total,dept_total_avg where   dept_total.value>=dept_total_avg.value;
+
+15. update student set dept_name='IT' WHERE dept_name= 'Comp. Sci.';
+
+16. update instructor set salary =salary*1.03 where salary>100000;
+ rollback;
+
+
+
+
+
+
