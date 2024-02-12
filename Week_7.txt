@@ -1,0 +1,184 @@
+create table StudentTable
+(
+RollNo int,
+GPA decimal(2,1)
+);
+
+insert into StudentTable values (1,5.8);
+insert into StudentTable values (2,6.5);
+insert into StudentTable values (3,3.4);
+insert into StudentTable values (4,7.8);
+insert into StudentTable values (5,9.5);
+
+SET SERVEROUTPUT ON;
+
+DECLARE
+	x studenttable.gpa%TYPE;
+BEGIN
+	for i in 1..5 LOOP
+	select gpa into x from studenttable where rollno=i;
+	dbms_output.put_line(x);
+	END LOOP;
+END;
+/
+
+1.
+DECLARE
+	x studenttable.gpa%TYPE;
+	y studenttable.rollno%TYPE;
+BEGIN
+	y :='&RollNo';
+	select gpa into x from studenttable where rollno=y;
+	dbms_output.put_line(x);
+END;
+/
+
+2.
+DECLARE
+	c char(2);
+	n int;
+	x studenttable.gpa%TYPE;
+	y studenttable.rollno%TYPE;
+BEGIN
+	y :='&RollNo';
+	select gpa into x from studenttable where rollno=y;
+	IF x<4 THEN c:='F';
+	ELSIF x>=4 and x<5 THEN c:='E';
+	ELSIF x>=5 and x<6 THEN c:='D';
+	ELSIF x>=6 and x<7 THEN c:='C';
+	ELSIF x>=7 and x<8 THEN c:='B';
+	ELSIF x>=8 and x<9 THEN c:='A';
+	ELSIF x>=9 and x<10 THEN c:='A+';
+	ELSE c:='na';
+	END IF;
+	dbms_output.put_line(c);
+END;
+/
+
+3.
+DECLARE
+	doi varchar(10);
+	dor varchar(10);
+	days int;
+	fine int;
+BEGIN
+	doi:='&date_of_issue';
+	dor:='&date_of_return';
+	DAYS:=to_date(dor, 'dd-mm-yyyy') - to_date(doi, 'dd-mm-yyyy');
+	IF days<=7 THEN fine:=0;
+	ELSIF days>=8 and days<=15 THEN fine:=1*days;
+	ELSIF days>=16 and days<=30 THEN fine:=2*days;
+	ELSE fine:=5*days;
+	END IF;
+	dbms_output.put_line('fine: '||fine);
+END;
+/
+select to_date(dor, 'dd-mm-yyyy') - to_date(doi, 'dd-mm-yyyy') into days from dual;
+
+
+4. 
+DECLARE
+	c char(2);
+	n int;
+	x studenttable.gpa%TYPE;
+BEGIN
+	select count(*) into n from studenttable;
+	for i in 1..n LOOP
+	select gpa into x from studenttable where rollno=i;
+	IF x<4 THEN c:='F';
+	ELSIF x>=4 and x<5 THEN c:='E';
+	ELSIF x>=5 and x<6 THEN c:='D';
+	ELSIF x>=6 and x<7 THEN c:='C';
+	ELSIF x>=7 and x<8 THEN c:='B';
+	ELSIF x>=8 and x<9 THEN c:='A';
+	ELSIF x>=9 and x<10 THEN c:='A+';
+	ELSE c:='na';
+	END IF;
+	dbms_output.put_line(c);
+	END LOOP;
+END;
+/
+
+5.
+ALTER table StudentTable add (LetterGrade Varchar2(2));
+DECLARE
+	c char(2);
+	n int;
+	x studenttable.gpa%TYPE;
+BEGIN
+	select count(*) into n from studenttable;
+	for i in 1..n LOOP
+	select gpa into x from studenttable where rollno=i;
+	IF x<4 THEN c:='F';
+	ELSIF x>=4 and x<5 THEN c:='E';
+	ELSIF x>=5 and x<6 THEN c:='D';
+	ELSIF x>=6 and x<7 THEN c:='C';
+	ELSIF x>=7 and x<8 THEN c:='B';
+	ELSIF x>=8 and x<9 THEN c:='A';
+	ELSIF x>=9 and x<10 THEN c:='A+';
+	ELSE c:='na';
+	END IF;
+	update studenttable set lettergrade=c where rollno=i;
+	END LOOP;
+END;
+/
+
+6. 
+DECLARE
+	max_gpa studenttable.gpa%TYPE;
+	n int;
+	x studenttable.gpa%TYPE;
+BEGIN
+	select count(*) into n from studenttable;
+	select gpa into max_gpa from studenttable where rollno=1;
+	for i in 2..n LOOP
+	select gpa into x from studenttable where rollno=i;
+	IF x>max_gpa THEN MAX_GPA:=x;
+	END IF;
+	END LOOP;
+	dbms_output.put_line('MAX_GPA IS: ' || max_gpa);
+END;
+/
+
+7.
+DECLARE
+	c char(2);
+	n int;
+	x studenttable.gpa%TYPE;
+BEGIN
+	select count(*) into n from studenttable;
+	for i in 1..n LOOP
+	select gpa into x from studenttable where rollno=i;
+	IF x<4 THEN c:='F'; GOTO PRINT;
+	ELSIF x>=4 and x<5 THEN c:='E'; GOTO PRINT;
+	ELSIF x<6 THEN c:='D'; GOTO PRINT;
+	ELSIF x<7 THEN c:='C'; GOTO PRINT;
+	ELSIF x<8 THEN c:='B'; GOTO PRINT;
+	ELSIF x<9 THEN c:='A'; GOTO PRINT;
+	ELSIF x<10 THEN c:='A+'; GOTO PRINT;
+	ELSE c:='na'; GOTO PRINT;
+	END IF;
+<<PRINT>>
+	dbms_output.put_line(c);
+	END LOOP;
+END;
+/
+
+
+8.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
