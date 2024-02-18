@@ -59,7 +59,10 @@ select * from all_courses;
 create view dept_tot_sal as select dept_name,sum(salary) tot_salary from instructor group by dept_name;
 select * from dept_tot_sal;
 
-
+A4.
+with cn(id, val) as
+(select distinct id, count(course_id) val from takes group by id)
+select distinct name dept_name, val from student s, takes t, cn where s.id=t.id and s.id=cn.id;
 
 
 
