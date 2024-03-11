@@ -145,6 +145,12 @@ CREATE VIEW Advisor_Student AS
 SELECT Advisor.S_ID, Advisor.I_ID, Student.name S_NAME, Instructor.name I_NAME
 FROM Advisor, Student, Instructor WHERE Advisor.S_ID = Student.ID AND Advisor.I_ID = Instructor.ID;
   
-
+Create or replace trigger advisor_delete
+INSTEAD OF DELETE on Advisor_Student
+FOR EACH ROW
+BEGIN
+delete from advisor where s_id= :OLD.s_id and i_id= :OLD.i_id;
+END;
+/
 
 
